@@ -110,7 +110,7 @@ cities.init();
           aliens.push({
             sprite: alienSprite[alienType],
             x: 30+j*30+ [0,4,0][alienType],
-            y:30+j*30,
+            y:30+i*30,
             width: alienSprite[alienType][0].width,
             height: alienSprite[alienType][0].height
           })
@@ -154,15 +154,14 @@ tank.x = Math.min(screen.width - tankSprite.width,tank.x);
       // Check if the bullet goes out of screen (either from top or bottom)
       
 
-      if(bullet.yn+bullet.height<0||bullet.y>screen.height){
-        bullet.splice(i,1);
+      if(bullet.y+bullet.height<0||bullet.y>screen.height){
+        bullets.splice(i,1);
         i--; 
         continue;
       }
       // Check if the bullet hits the cities (bullets from aliens & player)
       let h2 = bullet.height / 2;
-      if(cities.y<bullet.height+bullet.height&&
-        bullet.y + bullet.height< cities.y+ cities.height){
+      if(cities.y <bullet.y + bullet.height && bullet.y + bullet.height < cities.y + cities.height){
         if(cities.gotHit(bullet.x, bullet.y + bullet.height)){
           bullets.splice(i,1);
           i--;
@@ -172,9 +171,10 @@ tank.x = Math.min(screen.width - tankSprite.width,tank.x);
       
 
       // Check if the bullet hits the aliens (bullets from player)
-      for(let j = 0;j,aliens.length; j++){
+      for(let j = 0;j<aliens.length; j++){
         let alien = aliens[j];
-        if(Colliding(alien,bullet)&&bullet.speed_y<0){
+        if(Colliding(alien, bullet) && bullet.speed_y<0){
+          aliens.splice(j,1);
           j--;
           bullets.splice(i,1);
           i--;
@@ -199,12 +199,12 @@ tank.x = Math.min(screen.width - tankSprite.width,tank.x);
     // Aliens randomly shoot bullets by chance
     
 if(Math.random() < 0.03&& aliens.length > 0){
-  let alien = aliens[Math.floor(Math.random()*(alien.length)];
+  let alien = aliens[Math.floor(Math.random()*(aliens.length))];
     bullets.push(new Bullet(alien.x+alien.width*0.5,alien.y+alien.height,
           4,2,4, "#FFFFFF"))
 }
     // Update the frame
-    Frame++;
+    frames++;
 
     // Check if the frames number reach the level's frame requirement for movement
 
@@ -216,7 +216,7 @@ motion = (motion + 1) % 2;
       let rightMost = 0;
 let leftMost = screen.width;
 for(let i=0; i< aliens.length; i++){
-  let alien = alien[i];
+  let alien = aliens[i];
   alien.x + 30 * alien_direction;
 
   rightMost = Math.max(rightMost, alien.x + alien.width);
@@ -273,7 +273,7 @@ for(let i=0; i< aliens.length; i++){
     screen.ctx.drawImage(cities.canvas,0,cities.y)
 
     // Draw tank - use drawSprite
-    screen.drawSprite(tank.sprite.tank.x,tank.y);
+    screen.drawSprite(tank.sprite,tank.x,tank.y);
   }
 
   /*
@@ -285,7 +285,7 @@ for(let i=0; i< aliens.length; i++){
 
   // Adding key to the keyPressed array when a key is pressed
   $(window).on("keydown",function(event){
-    let key = even.which;
+    let key = event.which;
 
 // IF KEY PRESSED IS NOT THERE
  
@@ -293,18 +293,17 @@ for(let i=0; i< aliens.length; i++){
   keyPressed.push(key);
 
   if(key == 32){
-    bullets.push(new Bullet(tank. + 10, tank.y, -8,2,6, "#FFFFFF"))
+    bullets.push(new Bullet(tank.x + 10, tank.y, -8,2,6, "#FFFFFF"))
   }
  } 
-}
-   })
+});
 
 
  // Removing key from the keyPressed array when a key is released
 $(window).on("keyup",function(event){
   let key = event.which;
   let index = keyPressed.indexOf(key);
-  if(index != -1{
+  if(index != -1){
     keyPressed.splice(index,1)
   }
 })
